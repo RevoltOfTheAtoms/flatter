@@ -144129,26 +144129,6 @@ async function generateDescription(directory) {
 
 
 /**
- * Updates repository metadata.
- *
- * @param {PathLike} directory - A path to a Flatpak repository
- * @returns {Promise<>} A promise for the operation
- */
-async function updateRepositoryMetadata(directory) {
-    const updateArgs = [];
-
-    if (core.getInput('gpg-sign'))
-        updateArgs.push(`--gpg-sign=${core.getInput('gpg-sign')}`);
-
-    await exec.exec('flatpak', [
-        'build-update-repo',
-        ...updateArgs,
-        directory,
-    ]);
-}
-
-
-/**
  * Build a Flatpak application for the repository.
  *
  * A single repository cache is kept for all builds, while each architecture has
@@ -144435,6 +144415,17 @@ async function saveCache(directory) {
             return;
         }
 
+        // Update the repository metadata
+        const updateArgs = [];
+        if (core.getInput('gpg-sign'))
+            updateArgs.push(`--gpg-sign=${core.getInput('gpg-sign')}`);
+
+        await exec.exec('flatpak', [
+            'build-update-repo',
+            ...updateArgs,
+            directory,
+        ]);
+
         // Save the repository to cache
         const cachePaths = [directory];
         const cacheKey = core.getInput('gpg-sign')
@@ -144544,6 +144535,9 @@ async function run() {
             }
 
             core.endGroup();
+
+            if (process.exitCode === core.ExitCode.Failure)
+                return;
         }
     } else {
         await restoreCache(repository);
@@ -144554,27 +144548,17 @@ async function run() {
             try {
                 await buildApplication(repository, manifest);
             } catch (e) {
-                core.setFailed(`Failed to build "${manifest}": ${e.message}`);
+                core.setFailed(`Building "${manifest}": ${e.message}`);
             }
 
             core.endGroup();
+
+            if (process.exitCode === core.ExitCode.Failure)
+                return;
         }
-
-        core.startGroup(`Updating metadata for repository "${repository}"...`);
-
-        try {
-            await updateRepositoryMetadata(repository);
-        } catch (e) {
-            core.setFailed(`Failed to update metadata for repository "${repository}": ${e.message}`);
-        }
-
-        core.endGroup();
 
         await saveCache(repository);
     }
-
-    if (process.exitCode === core.ExitCode.Failure)
-        return;
 
     /*
      * GitHub Pages Artifact
