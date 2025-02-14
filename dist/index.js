@@ -144520,7 +144520,7 @@ async function run() {
      */
     if (core.getBooleanInput('run-tests')) {
         for (const manifest of manifests) {
-            core.startGroup(`Testing "${manifest}"...`);
+            core.info(`Testing "${manifest}"`);
 
             try {
                 await checkApplication(repository, manifest);
@@ -144534,8 +144534,6 @@ async function run() {
                 core.setFailed(`Testing "${manifest}": ${e.message}`);
             }
 
-            core.endGroup();
-
             if (process.exitCode === core.ExitCode.Failure)
                 return;
         }
@@ -144543,15 +144541,13 @@ async function run() {
         await restoreCache(repository);
 
         for (const manifest of manifests) {
-            core.startGroup(`Building "${manifest}"...`);
+            core.info(`Building "${manifest}"`);
 
             try {
                 await buildApplication(repository, manifest);
             } catch (e) {
                 core.setFailed(`Building "${manifest}": ${e.message}`);
             }
-
-            core.endGroup();
 
             if (process.exitCode === core.ExitCode.Failure)
                 return;
