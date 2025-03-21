@@ -8,8 +8,15 @@ project('flatter', 'c',
 )
 
 test_app = executable('flatter', 'main.c',
-  install: true,
+  dependencies: [dependency('gio-2.0'), dependency('gtk4')],
+       install: true,
 )
 
-test('test-success', test_app)
+test('test-success', test_app,
+  env: [
+    'GDK_BACKEND=wayland,x11',
+    'GSK_RENDERER=opengl',
+    'GTK_A11Y=test',
+  ],
+)
 
