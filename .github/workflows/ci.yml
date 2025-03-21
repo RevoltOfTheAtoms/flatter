@@ -35,7 +35,7 @@ jobs:
           echo "flatter.andyholmes.ca" > CNAME
 
       - name: Build
-        uses: andyholmes/flatter@main
+        uses: andyholmes/flatter@staging
         with:
           files: |
             tests/flatpak/ca.andyholmes.Flatter.json
@@ -50,7 +50,7 @@ jobs:
             CNAME
 
       - name: Test Success
-        uses: andyholmes/flatter@main
+        uses: andyholmes/flatter@staging
         with:
           files: |
             tests/flatpak/ca.andyholmes.Flatter.json
@@ -61,7 +61,7 @@ jobs:
       - name: Test Failure
         id: test-failure
         continue-on-error: true
-        uses: andyholmes/flatter@main
+        uses: andyholmes/flatter@staging
         with:
           files: |
             tests/flatpak/ca.andyholmes.Flatter.Failure.yml
