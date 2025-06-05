@@ -104,7 +104,7 @@ jobs:
         run: |
           cat >> ${{ matrix.runtime.name }}.Dockerfile << EOF
                     # syntax = docker/dockerfile:experimental
-                    FROM ghcr.io/${{ github.repository }}/flatter-base:latest
+                    FROM ghcr.io/revoltoftheatoms/flatter/flatter-base:latest
                     EOF
           
                     if [ -n "${{ matrix.runtime.gnome_nightly }}" ]; then
