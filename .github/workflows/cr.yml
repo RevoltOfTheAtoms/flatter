@@ -47,7 +47,7 @@ jobs:
           pull: true
           push: ${{ github.event_name != 'pull_request' }}
           platforms: linux/amd64
-          tags: ghcr.io/${{ github.repository }}/flatter-base:latest
+          tags: ghcr.io/revoltoftheatoms/flatter/flatter-base:latest
 
   build:
     name: Build
