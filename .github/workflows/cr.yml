@@ -129,4 +129,4 @@ jobs:
           file: ${{ matrix.runtime.name }}.Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           platforms: linux/amd64
-          tags: ghcr.io/${{ github.repository }}/${{ matrix.runtime.name }}:${{ matrix.runtime.tag }}
+          tags: ghcr.io/revoltoftheatoms/flatter/${{ matrix.runtime.name }}:${{ matrix.runtime.tag }}
