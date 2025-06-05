@@ -102,22 +102,34 @@ jobs:
 
       - name: Generate Dockerfile
         run: |
-
-          if [ -n "${{ matrix.runtime.flathub_beta }}" ]; then
           cat >> ${{ matrix.runtime.name }}.Dockerfile << EOF
-          RUN --security=insecure flatpak install -y --noninteractive \
-                                          flathub-beta \
-                                          ${{ matrix.runtime.flathub_beta }}
-          EOF
-          fi
-
-          if [ -n "${{ matrix.runtime.flathub }}" ]; then
-          cat >> ${{ matrix.runtime.name }}.Dockerfile << EOF
-          RUN --security=insecure flatpak install -y --noninteractive \
-                                          flathub \
-                                          ${{ matrix.runtime.flathub }}
-          EOF
-          fi
+                    # syntax = docker/dockerfile:experimental
+                    FROM ghcr.io/${{ github.repository }}/flatter-base:latest
+                    EOF
+          
+                    if [ -n "${{ matrix.runtime.gnome_nightly }}" ]; then
+                    cat >> ${{ matrix.runtime.name }}.Dockerfile << EOF
+                    RUN --security=insecure flatpak install -y --noninteractive \
+                                                    gnome-nightly \
+                                                    ${{ matrix.runtime.gnome_nightly }}
+                    EOF
+                    fi
+          
+                    if [ -n "${{ matrix.runtime.flathub_beta }}" ]; then
+                    cat >> ${{ matrix.runtime.name }}.Dockerfile << EOF
+                    RUN --security=insecure flatpak install -y --noninteractive \
+                                                    flathub-beta \
+                                                    ${{ matrix.runtime.flathub_beta }}
+                    EOF
+                    fi
+          
+                    if [ -n "${{ matrix.runtime.flathub }}" ]; then
+                    cat >> ${{ matrix.runtime.name }}.Dockerfile << EOF
+                    RUN --security=insecure flatpak install -y --noninteractive \
+                                                    flathub \
+                                                    ${{ matrix.runtime.flathub }}
+                    EOF
+                    fi
 
       - name: Build
         uses: docker/build-push-action@v6
